@@ -5,7 +5,7 @@
 Static cDirRaiz := "\DESAFIO\"
 
 /*********************************************************************************************************************/
-/*/{Protheus.doc} Cria Orçamento
+/*/{Protheus.doc} Converte Layout JSON
 
 @description 	Serviço realiza a conversão de JSON de um layout (sistema de rastreamento) para outro
 				layout (sistema de vendas) viabilizando a comunicação entre elas.
@@ -34,18 +34,23 @@ END WSRESTFUL
 @version undefined
 
 @type function
+
+@Used Functions
+	User Function: LogExec - LOGEXEC.PRW  	- Gravação de LOG
+						@param cMsg, 		characters, Mensagem contida no LOG
+						@param lDetalhe, 	characters, Se o Log será detalhado
+	User Function: MIDDLEWR - MIDDLEWR.PRW 	- Conversão de layouts
+						@param cBody, 		characters, Conteudo JSON recebido.				
 /*/
 /*********************************************************************************************************************/
 WSMETHOD POST WSSERVICE DesafioIntelipost
 Local aArea		:= GetArea()
-
 Local cBody		:= ""
 Local cMsgRet	:= ""
-
-Local lPost		:= .T.
+Local aPost		:= {}
+Local lPost		:= .F.
 
 Private cArqLog	:= ""
-Private cMsgOrc	:= ""
 
 //------------------------------+
 // Inicializa Log de Integracao |
@@ -53,10 +58,10 @@ Private cMsgOrc	:= ""
 MakeDir(cDirRaiz)
 cArqLog := cDirRaiz + "DesafioIntelipost" + cEmpAnt + cFilAnt + ".LOG"
 ConOut("")	
-LogExec(Replicate("-",80),.F.)
-LogExec("-------  #DESAFIO INTELIPOST - By Rafael Sarracini - https://www.linkedin.com/in/rafael-sarracini-65b028134/ -------",.F.)
-LogExec(Replicate("-",80),.F.)
-LogExec("INICIA PROCESSAMENTO DO POST - DesafioIntelipost",.T.)
+U_LogExec(Replicate("-",80),.F.)
+U_LogExec("-------  #DESAFIO INTELIPOST - By Rafael Sarracini - https://www.linkedin.com/in/rafael-sarracini-65b028134/ -------",.F.)
+U_LogExec(Replicate("-",80),.F.)
+U_LogExec("INICIA PROCESSAMENTO DO POST - DesafioIntelipost",.T.)
 
 //--------------------+
 // Seta o ContentType |
@@ -68,60 +73,42 @@ LogExec("INICIA PROCESSAMENTO DO POST - DesafioIntelipost",.T.)
 //--------------------+
 cBody := ::GetContent()
 
+// Verifica se existe conteudo no POST
+
 if !Empty(cBody)
-	CoNout('Conteúdo Recebido: '+CRLF + cBody)
+	Conout('Conteúdo Recebido: '+CRLF + cBody)
 	
 	//-----------------------------+
 	// Chama Função para Converter |
 	//-----------------------------+
 	
-	APIDES01()
+	aPost := U_MIDDLEWR(cBody)
 	
 else 
-	LogExec("400 - CONTENT IS MANDATORY",.T.)
+	// Loga erro de execução
+	U_LogExec("400 - CONTENT IS MANDATORY",.T.)
 	SetRestFault(400,"Insuficient Content",.T.)
  	lPost := .F.
-	CoNout('Nenhum conteudo foi recebido Conteúdo Recebido')	
+	Conout('Nenhum conteudo foi recebido Conteúdo Recebido')	
 endif
 
 
 
-if lPost
-	LogExec("200 - GRAVADO COM SUCESSO",.T.)
-	cMsgRet := ""
-	HTTPSetStatus(200,cMsgRet)  
+if aPost[1] == 1
+	// Loga Sucesso de execução
+	U_LogExec("200 - JSON CONVERTIDO e ENVIADO COM SUCESSO",.T.)
+	HTTPSetStatus(200,aPost[2])  
+	lPost := .T.
 Else
-	SetRestFault(400,cMsgOrc,.T.)	
+	// Loga erro de execução
+	U_LogExec("400 - "+aPost[2],.T.)
+	SetRestFault(400,aPost[2],.T.)	
+	lPost := .F.
 EndIf	
 
-LogExec("FINALIZA PROCESSO DE CRIACAO DE ORCAMENTO - DesafioIntelipost",.T.)
-LogExec(Replicate("-",80),.F.)
+U_LogExec("FINALIZA PROCESSO DE CRIACAO DE ORCAMENTO - DesafioIntelipost",.T.)
+U_LogExec(Replicate("-",80),.F.)
 ConOut("")
 
 RestArea(aArea)
 Return lPost	
-
-
-/*************************************************************************************/
-/*/{Protheus.doc} LogExec
-
-@description Grava log de integração
-
-@author Rafael Sarracini
-@since 21/11/2018
-@version undefined
-
-@param cMsg, characters, descricao
-
-@type function
-/*/
-/*************************************************************************************/
-Static Function LogExec(cMsg,lDetalhe)
-Default lDetalhe := .T.
-
-If lDetalhe
-	cMsg := "TID:[" + cValToChar(ThreadId()) + "] - Prog: " + ProcName(1) + ":Lin(" + Alltrim(Str(ProcLine())) + ") - DATA/HORA: " + dToc( Date() ) + " AS " + Time() + " " + cMsg
-EndIf
-CONOUT(cMsg)	
-LjWriteLog(cArqLog,cMsg)
-Return .T.
