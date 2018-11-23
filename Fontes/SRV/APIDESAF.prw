@@ -2,7 +2,7 @@
 #INCLUDE "TOTVS.CH"
 #INCLUDE "RESTFUL.CH"
 #DEFINE CRLF CHR(13) + CHR(10)
-Static cDirRaiz := "\DESAFIO\"
+
 
 /*********************************************************************************************************************/
 /*/{Protheus.doc} Converte Layout JSON
@@ -50,13 +50,7 @@ Local cMsgRet	:= ""
 Local aPost		:= {}
 Local lPost		:= .F.
 
-Private cArqLog	:= ""
 
-//------------------------------+
-// Inicializa Log de Integracao |
-//------------------------------+
-MakeDir(cDirRaiz)
-cArqLog := cDirRaiz + "DesafioIntelipost" + cEmpAnt + cFilAnt + ".LOG"
 ConOut("")	
 U_LogExec(Replicate("-",80),.F.)
 U_LogExec("-------  #DESAFIO INTELIPOST - By Rafael Sarracini - https://www.linkedin.com/in/rafael-sarracini-65b028134/ -------",.F.)
@@ -76,37 +70,41 @@ cBody := ::GetContent()
 // Verifica se existe conteudo no POST
 
 if !Empty(cBody)
-	Conout('Conteúdo Recebido: '+CRLF + cBody)
+	U_LogExec(Replicate("*",80),.F.)
+	U_LogExec("Conteúdo Recebido do sistema de Rastreamento: "+CRLF+cBody,.F.)
+	U_LogExec(Replicate("*",80),.F.)	
 	
 	//-----------------------------+
 	// Chama Função para Converter |
 	//-----------------------------+
-	
+	U_LogExec("Inicia MiddleWare",.T.)
 	aPost := U_MIDDLEWR(cBody)
+	U_LogExec("MiddleWare Finalizada",.T.)
 	
 else 
 	// Loga erro de execução
 	U_LogExec("400 - CONTENT IS MANDATORY",.T.)
 	SetRestFault(400,"Insuficient Content",.T.)
  	lPost := .F.
-	Conout('Nenhum conteudo foi recebido Conteúdo Recebido')	
+	U_LogExec('Nenhum conteudo foi recebido Conteúdo Recebido',.F.)	
 endif
 
+if len(aPost) == 2
+	if aPost[1] == 200
+		// Loga Sucesso de execução
+		U_LogExec("200 - JSON CONVERTIDO e ENVIADO COM SUCESSO",.T.)
+		HTTPSetStatus(200,aPost[2])  
+		lPost := .T.
+	Else
+		// Loga erro de execução
+		U_LogExec(cValToChar(aPost[1])+" - "+aPost[2],.T.)
+		SetRestFault(aPost[1],aPost[2],.T.)	
+		lPost := .F.
+	EndIf	
 
+endif	
 
-if aPost[1] == 1
-	// Loga Sucesso de execução
-	U_LogExec("200 - JSON CONVERTIDO e ENVIADO COM SUCESSO",.T.)
-	HTTPSetStatus(200,aPost[2])  
-	lPost := .T.
-Else
-	// Loga erro de execução
-	U_LogExec("400 - "+aPost[2],.T.)
-	SetRestFault(400,aPost[2],.T.)	
-	lPost := .F.
-EndIf	
-
-U_LogExec("FINALIZA PROCESSO DE CRIACAO DE ORCAMENTO - DesafioIntelipost",.T.)
+U_LogExec("FINALIZA PROCESSAMENTO DO POST  - DesafioIntelipost",.T.)
 U_LogExec(Replicate("-",80),.F.)
 ConOut("")
 
