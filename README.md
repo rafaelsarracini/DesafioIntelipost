@@ -7,7 +7,8 @@ Primeiramente, gostaria de agradecer a Intelipost ao [#Desafio](https://github.c
 
 O serviço trabalhará como uma Middleware, recebendo informações do Sistema de Rastreamento e irá trabalhar a informação para que seja possível enviar para uma Plataforma de Vendas.
 
-(TABELA)
+![Tabela 1](http://maxserver.net.br/rafael/table1.png)
+
 
 # Desenvolvimento
 
@@ -74,7 +75,7 @@ Instances=1,1
 
 ## Fontes:
 Foram desenvolvidos 3 Fontes para esse projeto:
-(IMAGEM)
+![Fontes](http://maxserver.net.br/rafael/Fontes.png)
 
 **APIDESAF.PRW**
 
@@ -95,7 +96,7 @@ Foi utilizado Notação Húngara em todos os fontes e os mesmos estão devidamen
 ## Includes e outras LIBs
 
 Foram utilizadas 9 Includes e 2 Fontes disponibilizado pela comunidade TOTVS.
-(imagem)
+![Fontes 2](http://maxserver.net.br/rafael/Fontes2.png)
 
 # Compilação
 
@@ -134,10 +135,10 @@ Após a configuração do Serviço e compilação de todos os fontes faça a seg
 ```
 http://187.62.210.102:8094/api/index/DESAFIOINTELIPOST
 ```
-**Serviço disponível para testes pela Intelipost :-) **
+**Serviço disponível para testes pela Intelipost** :-) 
 
 A Seguinte tela deverá Aparecer
-(imagem)
+![API](http://maxserver.net.br/rafael/API.png)
 
 ## Simulando o Sistema de Rastreamento
 
@@ -185,7 +186,7 @@ O Sistema de vendas foi simulado com o link Resquestbin abaixo:
 ```
 http://requestbin.fullcontact.com/1lsg0sk1
 ```
-(IMAGEM)
+![RequestBin](http://maxserver.net.br/rafael/RequestBin.png)
 
 O retorno do sistema irá devolver a seguinte mensagem:
 
