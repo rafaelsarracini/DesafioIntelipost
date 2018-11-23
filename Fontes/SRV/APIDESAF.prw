@@ -1,6 +1,8 @@
 #INCLUDE 'PROTHEUS.CH'
 #INCLUDE "TOTVS.CH"
-#INCLUDE "RESTFUL.CH"
+#INCLUDE "RESTFUL.CH"  
+#INCLUDE "SHASH.ch"
+#INCLUDE "JSON.ch"
 #DEFINE CRLF CHR(13) + CHR(10)
 
 
@@ -46,7 +48,6 @@ END WSRESTFUL
 WSMETHOD POST WSSERVICE DesafioIntelipost
 Local aArea		:= GetArea()
 Local cBody		:= ""
-Local cMsgRet	:= ""
 Local aPost		:= {}
 Local lPost		:= .F.
 
