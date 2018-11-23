@@ -1,7 +1,10 @@
 #INCLUDE 'PROTHEUS.CH'
 #INCLUDE "TOTVS.CH"
 #INCLUDE "RESTFUL.CH"
-#INCLUDE "APWEBSRV.CH"
+#INCLUDE "APWEBSRV.CH" 
+#INCLUDE "SHASH.ch"
+#INCLUDE "JSON.ch"
+#INCLUDE "AARRAY.CH"
 #DEFINE CRLF CHR(13) + CHR(10)
 
 /*************************************************************************************/
@@ -36,8 +39,8 @@ Local cDate		:= ""
 //pre-determina pelo posicionamento status_id x status 
 Local aStatus 	:= {"in_transit","to_be_delivered","delivered"}
 Local cStatus 	:= ""
-//Se Parametro existir, busca URL, se não utiliza URL pre-determinada
-Local cUrlPV	:= GetvMv("IT_URLPV",.f."URL A SER DEFINIDA")
+//Se Parametro existir, busca URL, se não utiliza URL pre-determinada no SX6
+Local cUrlPV	:= GetMv("IT_URLPV",.F.,"http://requestbin.fullcontact.com/1lsg0sk1")
 
 //Info para Plataforma de Vendas
 Local cRestPV 	:= ""
@@ -59,8 +62,8 @@ IF valtype(oRest) == "O"
 	//-----------------------------------------------------------------+
 	// Recupera as informações necessárias para a Plataforma de Vendas |
 	//-----------------------------------------------------------------+
-	cOrderId 	:= oRest[#"order_id"]
-	cStatusId 	:= oEvent[#"status_id"]
+	cOrderId 	:= cValToChar(oRest[#"order_id"])
+	cStatusId 	:= cValToChar(oEvent[#"status_id"])
 	cDate 		:= oEvent[#"date"]
 
 	//--------------------------------------------------------+
@@ -99,7 +102,7 @@ if lContinua
 	//-----------------------------------------------------+
 	aRetPV := aClone(u_MDWPOST(cRestPV,cUrlPV))
 	
-	if len(aRetPV) == 2
+	if aRetPV[1] == 200
 		U_LogExec("[MIDDLEWR] - Arquivo Traduzido foi Enviado para plataforma de Vendas com sucesso",.T.)	
 		//---------------------------+
 		// Prepara Retorno para API  |
