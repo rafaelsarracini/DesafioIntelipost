@@ -12,3 +12,5 @@ Includes obtidas na comunidade TOTVS
 #INCLUDE "AARRAY.CH"
 #INCLUDE "JSON.CH"
 #INCLUDE "SHASH.ch"
+
+INCLUDES HOMOLOGADAS para Versão do PROTHEUS 12
