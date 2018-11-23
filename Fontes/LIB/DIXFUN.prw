@@ -2,6 +2,9 @@
 #INCLUDE "TOTVS.CH"
 #INCLUDE "RESTFUL.CH"
 #INCLUDE "APWEBSRV.CH"
+#INCLUDE "SHASH.ch"
+#INCLUDE "JSON.ch"
+#INCLUDE "AARRAY.CH"
 #DEFINE CRLF CHR(13) + CHR(10)
 Static cDirRaiz := "\DESAFIO\"
 /*************************************************************************************/
@@ -30,10 +33,10 @@ Static cDirRaiz := "\DESAFIO\"
 /*/
 /*************************************************************************************/
 User Function MDWARQPV(cOrderId,cStatus,cDate)
-Local cRet := ""
+Local cRet 		:= ""
 Local oJson		:= Array(#)
 
-oJson[#"orderId"]	:= cOrderId
+oJson[#"orderId"]	:= Val(cOrderId)
 oJson[#"status"]	:= cStatus
 oJson[#"date"]		:= cDate
 
@@ -72,30 +75,31 @@ Return cRet
 User Function  MDWPOST(cRest,cUrl)
 Local aRet := {}
 Local aArea		:= GetArea()
-Local lRet		:= .F.
 
 Local nTimeOut		:= 240
 
 Local aHeadOut  	:= {}
 Local cXmlHead 	 	:= ""     
-Local cError    	:= ""
-Local cWarning  	:= ""
 Local cRetPost  	:= ""
 
 aAdd(aHeadOut,"Content-Type: text/plain" )
-                    
-                     
+       
+u_LogExec("Enviando para '"+cUrl+"' .......",.F.)
+	   
 cRetPost := HttpPost(cUrl ,"",cRest,nTimeOut,aHeadOut,@cXmlHead) 
+//valida se retorno foi diferente de Nulo.
+if Valtype(cRetPost) == "U"
+	cRetPost := ""
+endif
 
 If HTTPGetStatus() == 200
 	//Preenche retorno
-	aAdd := {200,"ENVIADO COM SUCESSO"}	
+	aRet := {200,"ENVIADO COM SUCESSO"}	
 	u_LogExec("ENVIADO COM SUCESSO| HTTPGetStatus():" + cValToChar(HTTPGetStatus()) + " | Mensagem: " + cRetPost)
 Else
 	//Preenche retorno
-	aAdd(aRet,400)
-	aAdd(aRet,"ERRO NO ENVIO")
-	
+	aRet := {400,"ERRO NO ENVIO DO ARQUIVO PARA PLAT VENDAS"}
+
 	u_LogExec("ERRO NO ENVIO | HTTPGetStatus():" + cValToChar(HTTPGetStatus()) + " | Mensagem: " + cRetPost)
 EndIf
 
