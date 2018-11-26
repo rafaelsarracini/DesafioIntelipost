@@ -132,11 +132,16 @@ Tempo de duração da compilação: 16 segundos
 
 Após a configuração do Serviço e compilação de todos os fontes faça a seguinte chamada no seu browser, neste caso estamos utilizado um serviço externo, liberado na porta 8094.
 
+Para consumir pela ferramenta de rastreamento de mercadoria, Postman, SoapUI e afins..
 ```
-http://187.62.210.102:8094/api/index/DESAFIOINTELIPOST
+http://187.62.210.102:8094/api/DESAFIOINTELIPOST
 ```
 **Serviço disponível para testes pela Intelipost** :-) 
 
+Para Visualizar no browser:
+```
+http://187.62.210.102:8094/api/index/DESAFIOINTELIPOST
+```
 A Seguinte tela deverá Aparecer
 ![API](http://maxserver.net.br/rafael/API.png)
 
