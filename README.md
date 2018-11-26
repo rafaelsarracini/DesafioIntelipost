@@ -195,3 +195,50 @@ O retorno do sistema irá devolver a seguinte mensagem:
     "message": "ENVIADO COM SUCESSO"
 }
 ```
+
+## Logs
+
+Todas as ocorrencias do profcessamento são logadas no Console do Appserver e também são gravadas no diretório \desafio\ (pasta logs deste projeto)
+
+Neste LOG conseguimos verificar que os 3 IDs de Status pre-determinados estão sendo traduzidos da forma correta.
+
+Abaixo, temos um log processamento real, neste LOG é mostrado as etapas de processamento, o conteudo recebido e o conteúdo enviado.
+```
+23/11/18 16:23:41 --------------------------------------------------------------------------------
+23/11/18 16:23:41 -------  #DESAFIO INTELIPOST - By Rafael Sarracini - https://www.linkedin.com/in/rafael-sarracini-65b028134/ -------
+23/11/18 16:23:41 --------------------------------------------------------------------------------
+23/11/18 16:23:41 TID:[9784] - Prog: POST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:41 INICIA PROCESSAMENTO DO POST - DesafioIntelipost
+23/11/18 16:23:41 ********************************************************************************
+23/11/18 16:23:41 Conteúdo Recebido do sistema de Rastreamento: 
+{
+  	"order_id":123,
+	"event":{
+		"status_id":3,
+		"date":"2018-02-02T10:45:32"
+	},
+	"package":{
+		"package_id":1,
+		"package_invoice":{
+			"number":"9871236",
+			"key":"01234567890123456789012345678901234567891234",
+			"date":"2018-02-01T10:45:32" 
+		}
+	}
+}
+23/11/18 16:23:41 ********************************************************************************
+23/11/18 16:23:41 TID:[9784] - Prog: POST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:41 Inicia MiddleWare
+23/11/18 16:23:41 TID:[9784] - Prog: U_MIDDLEWR:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:41 [MIDDLEWR] - Arquivo REST do sistema de rastreamento deserealizado 
+23/11/18 16:23:41 TID:[9784] - Prog: U_MIDDLEWR:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:41 [MIDDLEWR] - Arquivo REST do sistema de rastreamento foi traduzido e está pronto para ser enviado para Plataforma de Vendas 
+23/11/18 16:23:41 ********************************************************************************
+23/11/18 16:23:41 [MIDDLEWR] - Conteudo do Arquivo a ser enviado: 
+{"orderId":123,"status":"delivered","date":"2018-02-02T10:45:32"}
+23/11/18 16:23:41 ********************************************************************************
+23/11/18 16:23:41 Enviando para 'http://requestbin.fullcontact.com/1lsg0sk1' .......
+23/11/18 16:23:42 TID:[9784] - Prog: U_MDWPOST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:42 ENVIADO COM SUCESSO| HTTPGetStatus():200 | Mensagem: ok
+
+23/11/18 16:23:42 TID:[9784] - Prog: U_MIDDLEWR:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:42 [MIDDLEWR] - Arquivo Traduzido foi Enviado para plataforma de Vendas com sucesso
+23/11/18 16:23:42 TID:[9784] - Prog: POST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:42 MiddleWare Finalizada
+23/11/18 16:23:42 TID:[9784] - Prog: POST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:42 200 - JSON CONVERTIDO e ENVIADO COM SUCESSO
+23/11/18 16:23:42 TID:[9784] - Prog: POST:Lin(135) - DATA/HORA: 23/11/18 AS 16:23:42 FINALIZA PROCESSAMENTO DO POST  - DesafioIntelipost
+23/11/18 16:23:42 --------------------------------------------------------------------------------
+```
